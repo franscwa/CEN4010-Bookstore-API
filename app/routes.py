@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from services.db_service import db
 from models.models import Book
+from . import create_app
 
-app = Flask(__name__)
+app = create_app()
 
 db = SQLAlchemy(app)
 
