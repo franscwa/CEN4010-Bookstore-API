@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask, request, jsonify
 import pymysql
 
@@ -120,3 +121,5 @@ def get_book(isbn):
 # Run the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
+=======
+>>>>>>> 6c3f04012a03db754fb33c6ac35054fa1bac08d8
