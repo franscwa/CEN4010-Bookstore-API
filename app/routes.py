@@ -1,85 +1,61 @@
-from flask import Flask, jsonify, request
-import mysql.connector
+from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+from services.db_service import db
+from models.models import Book
+from . import create_app
 
-app = Flask(__name__)
+app = create_app()
 
-# MySQL Configuration
-db_config = {
-    'host': '',
-    'user': '',
-    'password': '',
-    'database': ''
-}
+db = SQLAlchemy(app)
 
-# MySQL connector
-db = mysql.connector.connect(**db_config)
-cursor = db.cursor()
+@app.route('/')
+def hello_world():
+    return jsonify(message="Hello, World!")
 
+@app.route('/books/<genre>', methods=['GET'])
+def get_books_by_genre(genre):
+    books = Book.query.filter_by(genre=genre).all()
+    book_list = []
+    for book in books:
+        book_data = {
+            'id': book.id,
+            'title': book.title,
+            'genre': book.genre
+        }
+        book_list.append(book_data)
+    return jsonify({'books': book_list})
 
-@app.route('/ratings', methods=['POST'])
-def create_rating():
-    data = request.get_json()
-    rating = data['rating']
-    user_id = data['user_id']
-    book_id = data['book_id']
+@app.route('/books/most_sold', methods=['GET'])
+def get_most_sold_books():
+    most_sold_books = Book.query.order_by(Book.sales.desc()).limit(10).all()
+    book_list = []
+    for book in most_sold_books:
+        book_data = {
+            'id': book.id,
+            'title': book.title,
+            'sales': book.sales
+        }
+        book_list.append(book_data)
+    return jsonify({'most_sold_books': book_list})
 
-    # Insert rating into the ratings table
-    query = "INSERT INTO ratings (rating, user_id, book_id) VALUES (%s, %s, %s)"
-    values = (rating, user_id, book_id)
-    cursor.execute(query, values)
-    db.commit()
+@app.route('/books/higher_rating/<float:threshold>', methods=['GET'])
+def get_books_with_higher_rating(threshold):
+    books = Book.query.filter(Book.rating > threshold).all()
+    book_list = []
+    for book in books:
+        book_data = {
+            'id': book.id,
+            'title': book.title,
+            'rating': book.rating
+        }
+        book_list.append(book_data)
+    return jsonify({'books_with_higher_rating': book_list})
 
-    return jsonify({'message': 'Rating created successfully'}), 200
-
-
-@app.route('/comments', methods=['POST'])
-def create_comment():
-    data = request.get_json()
-    comment = data['comment']
-    user_id = data['user_id']
-    book_id = data['book_id']
-
-    # Insert comment into the comments table
-    query = "INSERT INTO comments (comment, user_id, book_id) VALUES (%s, %s, %s)"
-    values = (comment, user_id, book_id)
-    cursor.execute(query, values)
-    db.commit()
-
-    return jsonify({'message': 'Comment created successfully'}), 200
-
-
-@app.route('/comments/<book_id>', methods=['GET'])
-def get_comments(book_id):
-    # Retrieve comments for the given book ID from the 'comments' table
-    query = "SELECT comment FROM comments WHERE book_id = %s"
-    values = (book_id,)
-    cursor.execute(query, values)
-    comments = [row[0] for row in cursor.fetchall()]
-
-    return jsonify(comments), 200
-
-# Pulls the ratings for a given book id
-@app.route('/ratings/<book_id>', methods=['GET'])
-def get_average_rating(book_id):
-
-    query = "SELECT rating FROM ratings WHERE book_id = %s"
-    values = (book_id,)
-    cursor.execute(query, values)
-    ratings = [row[0] for row in cursor.fetchall()]
-
-    average_rating = calculate_average_rating(ratings)
-
-    return jsonify({'average_rating': average_rating}), 200
-
-
-# Calculate the average rating
-def calculate_average_rating(ratings):
-    if not ratings:
-        return 0.0  # Return 0 if no ratings are available
-    total_rating = sum(ratings)
-    average_rating = total_rating / len(ratings)
-    return round(average_rating, 2)  # Round to 2 decimal places
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/books/discount_publisher/<publisher>/<float:discount>', methods=['PUT'])
+def discount_books_by_publisher(publisher, discount):
+    books = Book.query.filter_by(publisher=publisher).all()
+    for book in books:
+        book.price -= (book.price * discount)
+        db.session.add(book)
+    db.session.commit()
+    return jsonify({'message': 'Discount applied to books by publisher.'})
