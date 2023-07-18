@@ -29,7 +29,7 @@ def create_rating():
     cursor.execute(query, values)
     db.commit()
 
-    return jsonify({'message': 'You have left a rating'}), 200
+    return jsonify({'message': 'Rating created successfully'}), 200
 
 
 @app.route('/comments', methods=['POST'])
@@ -45,7 +45,7 @@ def create_comment():
     cursor.execute(query, values)
     db.commit()
 
-    return jsonify({'message': 'You have left a comment'}), 200
+    return jsonify({'message': 'Comment created successfully'}), 200
 
 
 @app.route('/comments/<book_id>', methods=['GET'])
@@ -67,13 +67,13 @@ def get_average_rating(book_id):
     cursor.execute(query, values)
     ratings = [row[0] for row in cursor.fetchall()]
 
-    average_rating = find_average_rating(ratings)
+    average_rating = calculate_average_rating(ratings)
 
     return jsonify({'average_rating': average_rating}), 200
 
 
 # Calculate the average rating
-def find_average_rating(ratings):
+def calculate_average_rating(ratings):
     if not ratings:
         return 0.0  # Return 0 if no ratings are available
     total_rating = sum(ratings)
