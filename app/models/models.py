@@ -12,4 +12,13 @@ class Book(db.model):
 
     def __repr__(self):
         return '<Title: %r>' % self.title
-    
+
+
+
+class shopping_cart(db.Model):
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    book_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<Shopping Cart Item: User ID: {self.user_id}, Book ID: {self.book_id}, Price: {self.price}>'
