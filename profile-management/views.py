@@ -2,10 +2,7 @@ from flask import Flask, request, jsonify
 from flask_pymysql import PyMySQL
 
 app = Flask(__name__)
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'user'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'mydb'
+
 mysql = PyMySQL(app)
 
 # Endpoint to create a new user
