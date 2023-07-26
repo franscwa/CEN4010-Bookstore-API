@@ -61,7 +61,6 @@ def create_wishlist():
     }
     return jsonify(response_data), 201
 
-
 @app.route('/wishlist/<int:wishlist_id>/book/<int:book_id>', methods=['POST'])
 def add_book_to_wishlist(wishlist_id, book_id):
     try:
@@ -84,7 +83,6 @@ def add_book_to_wishlist(wishlist_id, book_id):
     except Exception as e:
         return jsonify({'message': f'Error: {e}'}), 500
 
-
 @app.route('/wishlist/<int:wishlist_id>/books', methods=['GET'])
 def get_books_in_wishlist(wishlist_id):
     cur = mysql.connection.cursor()
@@ -101,7 +99,6 @@ def get_books_in_wishlist(wishlist_id):
         return jsonify({'message': 'There are no books in existence for this wishlist'}), 404
 
     return jsonify(books), 200
-
 
 @app.route('/wishlist/<int:wishlist_id>/book/<int:book_id>', methods=['DELETE'])
 def remove_book_from_wishlist(wishlist_id, book_id):
@@ -124,8 +121,6 @@ def remove_book_from_wishlist(wishlist_id, book_id):
             book_list.append(book_data)
 
     return jsonify(book_list), 200
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

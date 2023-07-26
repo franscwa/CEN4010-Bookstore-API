@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="74a00254-5866-4ce0-af04-7cd2cfc58012" name="Changes" comment="My app feature 1">
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+    <list default="true" id="74a00254-5866-4ce0-af04-7cd2cfc58012" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyApp/feature1/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist-managment/feature1/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyApp/feature1/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist-managment/feature1/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MyApp/feature1/wishlist.py" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist-managment/feature1/wishlist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wishlist-managment/feature1/wishlist.py" beforeDir="false" afterPath="$PROJECT_DIR$/wishlist-managment/feature1/wishlist.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +35,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="brandon_wishlist" />
+        <entry key="$PROJECT_DIR$" value="brandon_wishlist_final" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
