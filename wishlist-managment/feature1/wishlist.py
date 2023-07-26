@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
+import models
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ app.config['MYSQL_DB'] = 'wishlist_database'
 
 mysql = MySQL(app)
 
+# initialize database if not exists
 def init_db():
     cur = mysql.connection.cursor()
     cur.execute('''  
@@ -48,17 +50,40 @@ def create_wishlist():
     name = request.json['name']
     cur.execute("INSERT INTO wishlist(user_id, name) VALUES(%s, %s)", (user_id, name))
     mysql.connection.commit()
+
+    wishlist_id = cur.lastrowid
+
     cur.close()
-    return jsonify({'message': 'Wishlist created successfully!'}), 201
+
+    response_data = {
+        'message': 'Wishlist created successfully!',
+        'wishlist_id': wishlist_id
+    }
+    return jsonify(response_data), 201
 
 
 @app.route('/wishlist/<int:wishlist_id>/book/<int:book_id>', methods=['POST'])
 def add_book_to_wishlist(wishlist_id, book_id):
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO wishlist_item(wishlist_id, book_id) VALUES(%s, %s)", (wishlist_id, book_id))
-    mysql.connection.commit()
-    cur.close()
-    return jsonify({'message': 'Book added to wishlist successfully!'}), 201
+    try:
+        cur = mysql.connection.cursor()
+
+        # Checks if the wishlist exists before inserting the book
+        cur.execute("SELECT id FROM wishlist WHERE id = %s", (wishlist_id,))
+        result = cur.fetchone()
+
+        if result:
+            # Inserts the book into the wishlist_item table
+            cur.execute("INSERT INTO wishlist_item (wishlist_id, book_id) VALUES (%s, %s)", (wishlist_id, book_id))
+            mysql.connection.commit()
+            cur.close()
+            return jsonify({'message': 'Book added to wishlist successfully!'}), 201
+        else:
+            cur.close()
+            return jsonify({'message': f'Wishlist with ID {wishlist_id} does not exist'}), 404
+
+    except Exception as e:
+        return jsonify({'message': f'Error: {e}'}), 500
+
 
 @app.route('/wishlist/<int:wishlist_id>/books', methods=['GET'])
 def get_books_in_wishlist(wishlist_id):
@@ -69,9 +94,14 @@ def get_books_in_wishlist(wishlist_id):
         INNER JOIN wishlist_item ON book.id = wishlist_item.book_id
         WHERE wishlist_item.wishlist_id = %s
     ''', (wishlist_id,))
-    books = [dict(id=row[0], title=row[1], author=row[2]) for row in cur.fetchall()]
+    books = [dict(id=row[0], title=row[1], çauthor=row[2]) for row in cur.fetchall()]
     cur.close()
+
+    if not books:
+        return jsonify({'message': 'There are no books in existence for this wishlist'}), 404
+
     return jsonify(books), 200
+
 
 @app.route('/wishlist/<int:wishlist_id>/book/<int:book_id>', methods=['DELETE'])
 def remove_book_from_wishlist(wishlist_id, book_id):
@@ -85,6 +115,15 @@ def remove_book_from_wishlist(wishlist_id, book_id):
         return jsonify({'message': 'Book removed from wishlist successfully!'}), 200
 
 
+        if book_info:
+            book_data = {
+                'id': book_info['id'],
+                'title': book_info['title'],
+                'author': book_info['author'],
+            }
+            book_list.append(book_data)
+
+    return jsonify(book_list), 200
 
 
 
