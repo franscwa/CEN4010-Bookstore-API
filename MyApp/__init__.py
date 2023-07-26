@@ -17,11 +17,11 @@ def create_app():
 
 
     # Import and register blueprints for all modules
-    from .modules import book-details, book-rate-comment, browsing, profile-management, wishlist
-    app.register_blueprint(book-details.bp)
-    app.register_blueprint(book-rate-comment.bp)
+    from .modules import bookdetails, bookratecomment, browsing, profilemanagement, wishlist
+    app.register_blueprint(bookdetails.bp)
+    app.register_blueprint(bookratecomment.bp)
     app.register_blueprint(browsing.bp)
-    app.register_blueprint(profile-management.bp)
+    app.register_blueprint(profilemanagement.bp)
     app.register_blueprint(wishlist.bp)
 
     return app
