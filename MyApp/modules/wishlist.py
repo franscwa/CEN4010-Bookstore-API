@@ -1,7 +1,7 @@
 #brandon
 from flask import Flask, request, jsonify, Blueprint
 from MyApp.database import mysql
-import models
+##import models
 
 
 bp = Blueprint('wishlist', __name__, url_prefix='/wishlist')
@@ -36,7 +36,7 @@ def init_db():
     mysql.connection.commit()
 
 # Creates tables if not exist
-with bp.app_context():
+##with bp.app_context():
     init_db()
 
 @bp.route('/wishlist', methods=['POST'])

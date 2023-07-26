@@ -1,8 +1,8 @@
 #david
 from flask import Flask, request, jsonify, render_template, Blueprint
 from flask_sqlalchemy import SQLAlchemy
-from models.Book import Book
-from services.db_service import db
+from MyApp.models.book import Book
+from ..services.db_service import db
 
 bp = Blueprint('browsing', __name__, url_prefix='/browsing')
 

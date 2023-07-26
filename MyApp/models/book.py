@@ -1,7 +1,7 @@
 # You'll define your SQLAlchemy models in such files
-from services.db_service import db
+from ..services.db_service import db
 
-class Book(db.model):
+class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author = db.Column(db.String(200), nullable=False)
     title = db.Column(db.String(200), nullable=False)
