@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
-import models
 
 app = Flask(__name__)
 
@@ -106,21 +105,26 @@ def remove_book_from_wishlist(wishlist_id, book_id):
     cur.execute("DELETE FROM wishlist_item WHERE wishlist_id=%s AND book_id=%s", (wishlist_id, book_id))
     mysql.connection.commit()
     cur.close()
+
     if cur.rowcount == 0:
         return jsonify({'message': 'No such book in the wishlist'}), 404
     else:
-        return jsonify({'message': 'Book removed from wishlist successfully!'}), 200
-
+        # Fetches book information from the 'book' table based on 'book_id'
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, title, author FROM book WHERE id = %s", (book_id,))
+        book_info = cur.fetchone()
+        cur.close()
 
         if book_info:
             book_data = {
-                'id': book_info['id'],
-                'title': book_info['title'],
-                'author': book_info['author'],
+                'id': book_info[0],
+                'title': book_info[1],
+                'author': book_info[2],
             }
-            book_list.append(book_data)
+            return jsonify({'message': 'Book removed from wishlist successfully!', 'book_data': book_data}), 200
+        else:
+            return jsonify({'message': 'Book removed from wishlist successfully!', 'book_data': {}}), 200
 
-    return jsonify(book_list), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
