@@ -7,11 +7,6 @@ from ..services.db_service import db
 bp = Blueprint('browsing', __name__, url_prefix='/browsing')
 
 
-
-@bp.route('/')
-def hello_world():
-    return jsonify(message="Hello, World!")
-
 @bp.route('/books/<genre>', methods=['GET'])
 def get_books_by_genre(genre):
     books = Book.query.filter_by(genre=genre).all()
